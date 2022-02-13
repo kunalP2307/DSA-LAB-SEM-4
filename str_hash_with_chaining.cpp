@@ -18,7 +18,7 @@ class ChainNode{
         nextPtr = NULL;
     }
 
-    void addChainElement(ChainNode* &head,string name){
+    static void addChainElement(ChainNode* &head,string name){
         
         ChainNode* chainNode = new ChainNode(name);
 
@@ -35,8 +35,24 @@ class ChainNode{
         temp->nextPtr = chainNode;
 
     }
+    
+    static int searchKeyInChain(ChainNode* head,string key){
 
-    void displayChain(ChainNode* head){
+        ChainNode* temp = head;
+        int searchingComplexity = 1;
+
+        while(temp != NULL){
+            cout<<temp->name;
+            searchingComplexity += 1;
+            if(temp->name == key)
+                return searchingComplexity;
+            temp = temp->nextPtr;
+        }
+        return -1;
+
+    }
+
+    static void displayChain(ChainNode* head){
 
         ChainNode* temp = head;
 
@@ -48,7 +64,6 @@ class ChainNode{
     }
 
 };
-
 
 class StringHashTable{
 
@@ -88,6 +103,20 @@ class StringHashTable{
 
     }   
 
+    int searchKey(string key){
+
+        int hashCode = getHashCode(key);
+    
+        if(hashTable[hashCode] == "-X-")
+            return -1;
+        else if(hashTable[hashCode] != key && chains[hashCode] == NULL)
+            return -1;
+        else if(hashTable[hashCode] == key)
+            return 1;
+        else
+            return ChainNode::searchKeyInChain(chains[hashCode],key);
+    
+    }
     void storeElementsInHashTable(){
         
         string str;
@@ -101,9 +130,8 @@ class StringHashTable{
                 hashTable[hashCode] = str;   
 
             else
-                chains[0]->addChainElement(chains[hashCode],str);    
-        }
-        
+                ChainNode::addChainElement(chains[hashCode],str);    
+        }      
     }
 
     void displayHashTable(){
@@ -113,7 +141,7 @@ class StringHashTable{
         cout<<"  -------------------";
         for(int i=0; i<size; i++){
             cout<<endl<<setw(10)<<hashTable[i]<<" ->";
-            chains[0]->displayChain(chains[i]);
+            ChainNode::displayChain(chains[i]);
         }
         cout<<endl;
     }
@@ -125,6 +153,8 @@ int main(){
     table.setTableSize();
     table.storeElementsInHashTable();
     table.displayHashTable();
+    cout<<table.searchKey("patil");
+    
     return 0;
 }
 
