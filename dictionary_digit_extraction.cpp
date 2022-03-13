@@ -55,6 +55,31 @@ class ChainNode{
         return "";
 
     }
+    
+    static void deleteNode(ChainNode* head,long int key){
+        
+        ChainNode* temp = head;
+            
+        if(head->nextPtr == NULL){
+            head = NULL;
+            free(temp);
+            return;
+        }
+
+        while(temp->teleNumber != key)
+            temp = temp -> nextPtr;
+        
+        ChainNode* delNode = temp->nextPtr;
+        free(delNode);
+
+        if(temp->nextPtr->nextPtr == NULL)
+            temp->nextPtr = NULL;
+
+        temp->nextPtr = temp->nextPtr->nextPtr;
+        
+        cout<<"\nDeletion Complete..";
+
+    }
 
     static void displayChain(ChainNode* head){
 
@@ -122,26 +147,41 @@ class StringHashTable{
             return ChainNode::searchKeyInChain(chains[hashCode],key);
     
     }
-    void storeElementsInHashTable(){
+
+    bool deleteRecord(long int key){
         
-        long int ele;
-        string name;
+        if(searchKey(key) == ""){
+            cout<<"\nRecord Not present in Hash Table..";
+            return false;
+        }
+
+        int hashCode = getHashCode(key);
+        
+        if(hashTable[hashCode] == key){
+            hashCode[hashTable] = -1;
+            name[hashCode] = "";
+            cout<<"\nDeletion Complete..";
+            return 1;
+        }
+        else {
+            ChainNode::deleteNode(chains[hashCode],key);
+        }
+    }
+
+    void addRecord(int long ele, string name){
+        
         ChainNode chain;
-        for(int i=0; i<size; i++){
-            cout<<"Enter Client Name : ";
-            cin>>name;
-            cout<<"Enter Telephone No : ";
-            cin>>ele;
-            int hashCode = getHashCode(ele);
+        
+        int hashCode = getHashCode(ele);
 
-            if(hashTable[hashCode] == -1){
-                hashTable[hashCode] = ele;
-                this->name[hashCode] = name;
-            }   
+        if(hashTable[hashCode] == -1){
+            hashTable[hashCode] = ele;
+            this->name[hashCode] = name;
+        }   
 
-            else
-                ChainNode::addChainElement(chains[hashCode],ele,name);    
-        }      
+        else
+            ChainNode::addChainElement(chains[hashCode],ele,name);    
+              
     }
 
     void displayHashTable(){
@@ -160,19 +200,83 @@ class StringHashTable{
 int main(){
 
     StringHashTable table;
-    long int key;
-    table.setTableSize();
-    table.storeElementsInHashTable();
-    table.displayHashTable();
-
-    cout<<"Enter Telephone Number To Search In Hash Table : ";
-    cin>>key;
-
-    string name = table.searchKey(key);
+    long int mobNo;
+    string name;
+    int n;
     
-    if(name == "")
-        cout<<"\nElement Not Present in Hash Table";
-    else
-        cout<<"\nElement is Present in Hash Table "<<endl<<"Name of Client : "<<name<<endl;
+    cout<<"Enter the number of Elements you want to Insert In Hash Table : ";
+    cin>>n;
+    for(int i=0; i<n; i++)  {
+        cout<<"Enter Client Name : ";
+        cin>>name;
+        cout<<"Enter Mobile Number : ";
+        cin>>mobNo;
+        table.addRecord(mobNo,name);
+    }
+
+    int choice;
+
+    do{
+        cout<<"\n-------------------------\n";
+        cout<<"->1 Insert Record"
+            <<endl<<"->2 Search Record"
+            <<endl<<"->3 Delete Record"
+            <<endl<<"->4 Display"<<endl;
+        
+        cout<<"Select Operation : ";
+        cin>>choice;
+
+        switch (choice){
+        
+        case 1:{
+
+            cout<<"Enter Client Name : ";
+            cin>>name;
+            cout<<"Enter Mobile Number : ";
+            cin>>mobNo;
+            table.addRecord(mobNo,name);
+
+            break;
+        }
+
+        case 2:{
+        
+            cout<<"Enter Telephone Number To Search In Hash Table : ";
+            cin>>mobNo;
+
+            string clientName = table.searchKey(mobNo);
+    
+            if(clientName == "")
+                cout<<"\nElement Not Present in Hash Table";
+            else
+                cout<<"\nElement is Present in Hash Table "<<endl<<"Name of Client : "<<clientName<<endl;
+    
+            break;
+        }
+        
+        case 3:{
+
+            cout<<"Enter Telephone Number To Delete In Hash Table : ";
+            cin>>mobNo;
+            table.deleteRecord(mobNo);
+
+            break;
+        }
+
+        case 4:{
+            table.displayHashTable();
+            break;
+        }
+        default:
+            cout<<"\n Invalid Choice Try Again..!";
+            break;
+        }
+        
+        cout<<"\n Do you want to continue (Y/N) : [1/0] : ";
+        cin>>choice;
+            
+    }while(choice == 1);
+
+    cout<<"\nExited!";
     return 0;
 }
