@@ -29,6 +29,7 @@ class Graph{
     Edge edges[MAX],mst[MAX];
     int noOfEdges,noOfvertices;
 
+
     public:
 
     Graph(int noOfEdges,int noOfvertices){
@@ -139,7 +140,7 @@ class Graph{
 
 int main(){
 
-    Graph g(3,3);
+    Graph g(6,4);
 
     g.findMSTUsingKruskals();
 
