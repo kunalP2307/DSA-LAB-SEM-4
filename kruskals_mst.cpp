@@ -5,15 +5,15 @@ using namespace std;
 class Edge{
 
     public :
-        char source;
-        char destination;
+        int source;
+        int destination;
         int weight;
 
     Edge(){
 
     }
 
-    Edge(char source, char destination, int weight){
+    Edge(int source, int destination, int weight){
 
         this->source = source;
         this->destination = destination;
@@ -25,7 +25,7 @@ class Edge{
 
 class Graph{
 
-    char vertices[MAX];
+    int vertices[MAX];
     Edge edges[MAX],mst[MAX];
     int noOfEdges,noOfvertices;
 
@@ -42,16 +42,19 @@ class Graph{
     }
 
     void setVertices(){
+        
 
         cout<<"Enter the Vertices : ";
-        for(int i=0; i<noOfvertices; i++)
+        for(int i=0; i<noOfvertices; i++){
             cin>>this->vertices[i];
+            cout<<vertices[i];
+        }
 
     }
 
     void setEdges(){
     
-        char source,destination;
+        int source,destination;
         int weight;
             
         for(int i=0; i<noOfEdges; i++){
@@ -97,24 +100,45 @@ class Graph{
         return false;
 
     }
-    
+
+    int findParent(int vertex,int parent[]){
+
+        if(parent[vertex] == vertex)
+            return vertex;
+
+        return findParent(parent[vertex],parent);
+
+    }    
+
     void findMSTUsingKruskals(){
 
         cout<<"\nGiven Graph : \n";
         printEdges(edges,noOfEdges);
 
         sortEdges();
-        int i=0;
-        int j=0;
+        int i = 0;
+        int count = 0;
 
-        while(j < noOfvertices - 1) {
+        int parent[noOfvertices];
+        
+        for(int i=0; i<noOfvertices; i++)
+            parent[i] = i;  
 
-            if(!isEdgeFormingCycle(edges[i],j)){
-                mst[j] = edges[i];
-                j++;
-            }
 
-            i++;
+
+        while(count < noOfvertices - 1) {
+
+            Edge currentEge = edges[i];
+            
+            int sourceParent =  findParent(currentEge.source,parent);
+            int destinationParent =  findParent(currentEge.destination,parent);
+
+            if(sourceParent != destinationParent){
+                mst[count] = currentEge;
+                count++;
+                parent[sourceParent] = destinationParent;
+            }        
+            i++;       
 
         }
 
@@ -137,7 +161,6 @@ class Graph{
 
     }
 };
-
 int main(){
 
     Graph g(6,4);
